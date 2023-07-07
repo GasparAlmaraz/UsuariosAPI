@@ -22,6 +22,13 @@ namespace UsuariosAPI.Controllers
             _config = config;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var currentUser = GetCurrentUser();
+            return Ok("Saludos " + currentUser.Rol + " " + currentUser.Name);
+        }
+
         // POST: api/Login
         [HttpPost]
         public IActionResult Login(LoginUser userLogin)
@@ -65,6 +72,24 @@ namespace UsuariosAPI.Controllers
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private Usuario GetCurrentUser()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            if(identity != null)
+            {
+                var userClaims = identity.Claims;
+
+                return new Usuario
+                {
+                    Name = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value,
+                    Correo = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Email)?.Value,
+                    Rol = userClaims.FirstOrDefault(o => o.Type == ClaimTypes.Role)?.Value
+                };
+            }
+            return null;
         }
     }
 }
