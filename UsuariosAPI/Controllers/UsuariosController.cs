@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,7 @@ namespace UsuariosAPI.Controllers
 
         // GET: api/Usuarios/5
         [HttpGet("{id}")]
+        [Authorize(Roles = ("Usuario, Administrador"))]
         public async Task<ActionResult<Usuario>> GetUsuario(int id)
         {
           if (_context.Usuarios == null)
@@ -53,6 +55,7 @@ namespace UsuariosAPI.Controllers
         // PUT: api/Usuarios/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        [Authorize (Roles = ("Usuario, Administrador"))]
         public async Task<IActionResult> PutUsuario(int id, Usuario usuario)
         {
             if (id != usuario.Id)
@@ -84,6 +87,7 @@ namespace UsuariosAPI.Controllers
         // POST: api/Usuarios
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        [Authorize(Roles = ("Administrador"))]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
           if (_context.Usuarios == null)
